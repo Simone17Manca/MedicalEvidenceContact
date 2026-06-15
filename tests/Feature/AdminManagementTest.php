@@ -114,6 +114,58 @@ class AdminManagementTest extends TestCase
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }
 
+    public function test_admin_can_create_business_user(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.users.store'), [
+                'role' => 'business',
+                'first_name' => 'Marco',
+                'last_name' => 'Business',
+                'email' => 'marco.business@example.test',
+                'phone' => '333000111',
+                'password' => 'password',
+                'password_confirmation' => 'password',
+                'company_name' => 'Clinica Business',
+                'company_type' => 'Clinica privata',
+                'location' => 'Torino',
+                'employee_count' => 40,
+            ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('users', [
+            'email' => 'marco.business@example.test',
+            'role' => 'business',
+        ]);
+        $this->assertDatabaseHas('business_profiles', [
+            'company_name' => 'Clinica Business',
+            'location' => 'Torino',
+        ]);
+    }
+
+    public function test_admin_can_create_admin_user(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.users.store'), [
+                'role' => 'admin',
+                'first_name' => 'Ada',
+                'last_name' => 'Staff',
+                'email' => 'ada.staff@example.test',
+                'phone' => '333444555',
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('users', [
+            'email' => 'ada.staff@example.test',
+            'role' => 'admin',
+        ]);
+    }
+
     public function test_admin_can_create_update_and_delete_job_posting(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
