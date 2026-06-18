@@ -81,6 +81,101 @@
                     </form>
                 </section>
 
+
+                <section class="mb-8 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Esperienze e percorsi di studio</h3>
+                            <p class="mt-1 text-sm text-gray-600">Aggiungi le informazioni che saranno visibili ai business quando valuteranno una tua candidatura.</p>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ route('professional-profile-items.store') }}" class="mt-5 grid gap-4 lg:grid-cols-[180px_1fr_180px]">
+                        @csrf
+
+                        <div>
+                            <x-label for="profile_item_type" value="Tipo" />
+                            <select id="profile_item_type" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                <option value="work_experience" @selected(old('type') === 'work_experience')>Esperienza lavorativa</option>
+                                <option value="education" @selected(old('type') === 'education')>Percorso di studio</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <x-label for="profile_item_title" value="Titolo" />
+                            <x-input id="profile_item_title" class="mt-1 block w-full" type="text" name="title" :value="old('title')" required />
+                        </div>
+
+                        <div>
+                            <x-label for="profile_item_duration" value="Durata" />
+                            <x-input id="profile_item_duration" class="mt-1 block w-full" type="text" name="duration" :value="old('duration')" placeholder="Es. 2021 - 2024" required />
+                        </div>
+
+                        <div class="lg:col-span-3">
+                            <x-label for="profile_item_description" value="Testo" />
+                            <textarea id="profile_item_description" name="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>
+                        </div>
+
+                        <div class="lg:col-span-3 flex justify-end border-t border-gray-100 pt-5">
+                            <x-button>
+                                Aggiungi al profilo
+                            </x-button>
+                        </div>
+                    </form>
+
+                    @php($profileItems = auth()->user()->professionalProfileItems()->latest()->get())
+
+                    @if ($profileItems->isNotEmpty())
+                        <div class="mt-6 grid gap-3">
+                            @foreach ($profileItems as $item)
+                                <article class="rounded-md border border-gray-200 p-4">
+                                    <form method="POST" action="{{ route('professional-profile-items.update', $item) }}" class="grid gap-4 lg:grid-cols-[180px_1fr_180px]">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div>
+                                            <x-label for="profile_item_type_{{ $item->id }}" value="Tipo" />
+                                            <select id="profile_item_type_{{ $item->id }}" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                                <option value="work_experience" @selected(old('type', $item->type) === 'work_experience')>Esperienza lavorativa</option>
+                                                <option value="education" @selected(old('type', $item->type) === 'education')>Percorso di studio</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <x-label for="profile_item_title_{{ $item->id }}" value="Titolo" />
+                                            <x-input id="profile_item_title_{{ $item->id }}" class="mt-1 block w-full" type="text" name="title" :value="old('title', $item->title)" required />
+                                        </div>
+
+                                        <div>
+                                            <x-label for="profile_item_duration_{{ $item->id }}" value="Durata" />
+                                            <x-input id="profile_item_duration_{{ $item->id }}" class="mt-1 block w-full" type="text" name="duration" :value="old('duration', $item->duration)" required />
+                                        </div>
+
+                                        <div class="lg:col-span-3">
+                                            <x-label for="profile_item_description_{{ $item->id }}" value="Testo" />
+                                            <textarea id="profile_item_description_{{ $item->id }}" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description', $item->description) }}</textarea>
+                                        </div>
+
+                                        <div class="lg:col-span-3 flex justify-end border-t border-gray-100 pt-4">
+                                            <x-button>
+                                                Salva modifiche
+                                            </x-button>
+                                        </div>
+                                    </form>
+
+                                    <form method="POST" action="{{ route('professional-profile-items.destroy', $item) }}" class="mt-3 flex justify-end" onsubmit="return confirm('Eliminare questo elemento dal profilo?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500">
+                                            Elimina
+                                        </button>
+                                    </form>
+                                </article>
+                            @endforeach
+                        </div>
+                    @endif
+                </section>
+
                 <section class="mb-8 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                         <div>

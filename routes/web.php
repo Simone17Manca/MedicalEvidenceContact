@@ -9,6 +9,7 @@ use App\Http\Controllers\BusinessPointOfContactController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobPostingController;
 use App\Http\Controllers\ProfessionalDocumentController;
+use App\Http\Controllers\ProfessionalProfileItemController;
 use Illuminate\Http\Request;
 
 /*
@@ -69,4 +70,7 @@ Route::middleware([
     Route::get('/business/point-of-contact', [BusinessPointOfContactController::class, 'index'])->name('business-points-of-contact.index');
     Route::post('/business/point-of-contact', [BusinessPointOfContactController::class, 'store'])->name('business-points-of-contact.store');
     Route::post('/professionista/documenti', [ProfessionalDocumentController::class, 'store'])->name('professional-documents.store');
+    Route::post('/professionista/profilo-elementi', [ProfessionalProfileItemController::class, 'store'])->name('professional-profile-items.store');
+    Route::put('/professionista/profilo-elementi/{professionalProfileItem}', [ProfessionalProfileItemController::class, 'update'])->name('professional-profile-items.update');
+    Route::delete('/professionista/profilo-elementi/{professionalProfileItem}', [ProfessionalProfileItemController::class, 'destroy'])->name('professional-profile-items.destroy');
 });

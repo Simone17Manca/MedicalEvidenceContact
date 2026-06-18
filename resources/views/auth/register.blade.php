@@ -100,6 +100,15 @@
                             <legend class="text-base font-semibold text-gray-900">Profilo professionista</legend>
                             <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
+                                    <x-label for="profession" value="Professione" />
+                                    <select id="profession" name="profession" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        @foreach (config('professional-professions.values') as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('profession', 'oss') === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div>
                                     <x-label for="nationality" value="Nazionalita" />
                                     <select id="nationality" name="nationality" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" autocomplete="country-name">
                                         @foreach (config('nationalities.values') as $nationality)

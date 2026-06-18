@@ -43,7 +43,7 @@ class ProfessionalDocumentTest extends TestCase
 
     public function test_professional_can_upload_dashboard_documents(): void
     {
-        Storage::fake('public');
+        Storage::fake('professional_documents');
 
         $professional = User::factory()->create([
             'role' => 'professional',
@@ -61,8 +61,8 @@ class ProfessionalDocumentTest extends TestCase
 
         $this->assertNotNull($professional->ata_certificate_path);
         $this->assertNotNull($professional->residence_permit_path);
-        Storage::disk('public')->assertExists($professional->ata_certificate_path);
-        Storage::disk('public')->assertExists($professional->residence_permit_path);
+        Storage::disk('professional_documents')->assertExists($professional->ata_certificate_path);
+        Storage::disk('professional_documents')->assertExists($professional->residence_permit_path);
     }
 
     public function test_business_cannot_upload_professional_documents(): void

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ProfessionalDocumentStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProfessionalDocumentController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, ProfessionalDocumentStorage $documents): RedirectResponse
     {
         abort_unless($request->user()->role === 'professional', 403);
 
@@ -16,21 +17,7 @@ class ProfessionalDocumentController extends Controller
             'residence_permit_document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
 
-        $updates = [];
-
-        if ($request->hasFile('ata_certificate_document')) {
-            $updates['ata_certificate_path'] = $data['ata_certificate_document']
-                ->store('professional-documents/ata-certificates', 'public');
-        }
-
-        if ($request->hasFile('residence_permit_document')) {
-            $updates['residence_permit_path'] = $data['residence_permit_document']
-                ->store('professional-documents/residence-permits', 'public');
-        }
-
-        if ($updates !== []) {
-            $request->user()->forceFill($updates)->save();
-        }
+        $documents->store($request->user(), $data);
 
         return redirect()
             ->route('dashboard')

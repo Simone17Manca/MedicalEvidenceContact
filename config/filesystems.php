@@ -15,6 +15,8 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
+    'professional_documents_disk' => env('PROFESSIONAL_DOCUMENTS_DISK', 'professional_documents'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
@@ -42,6 +44,12 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+        ],
+
+        'professional_documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/professional-documents'),
+            'throw' => true,
         ],
 
         's3' => [

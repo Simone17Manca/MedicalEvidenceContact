@@ -3,8 +3,8 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Services\ProfessionalDocumentStorage;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
@@ -88,14 +88,14 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'residence' => $input['address_city'] ?? $user->residence,
         ];
 
-        if (($input['residence_permit_document'] ?? null) instanceof UploadedFile) {
-            $fields['residence_permit_path'] = $input['residence_permit_document']->store('professional-documents/residence-permits', 'public');
-        }
+        $documentUpdates = app(ProfessionalDocumentStorage::class)->store($user, [
+            'residence_permit_document' => $input['residence_permit_document'] ?? null,
+            'ata_certificate_document' => $input['ata_certificate_document'] ?? null,
+        ]);
 
-        if (($input['ata_certificate_document'] ?? null) instanceof UploadedFile) {
-            $fields['ata_certificate_path'] = $input['ata_certificate_document']->store('professional-documents/ata-certificates', 'public');
-        }
-
-        return $fields;
+        return [
+            ...$fields,
+            ...$documentUpdates,
+        ];
     }
 }

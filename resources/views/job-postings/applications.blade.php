@@ -43,7 +43,9 @@
             @else
                 <div class="grid gap-4">
                     @foreach ($applications as $application)
-                        @php($professional = $application->professional)
+                        @php
+                            $professional = $application->professional;
+                        @endphp
 
                         <article class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -61,6 +63,55 @@
                                             <dd class="mt-1">{{ $professional->residence ?: 'Non indicata' }}</dd>
                                         </div>
                                     </dl>
+
+                                    @php
+                                        $workExperiences = $professional->professionalProfileItems->where('type', 'work_experience');
+                                        $educationItems = $professional->professionalProfileItems->where('type', 'education');
+                                    @endphp
+
+                                    <div class="mt-5 grid gap-4 lg:grid-cols-2">
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-gray-900">Esperienze lavorative</h4>
+                                            @if ($workExperiences->isEmpty())
+                                                <p class="mt-2 text-sm text-gray-600">Non indicate.</p>
+                                            @else
+                                                <div class="mt-2 grid gap-3">
+                                                    @foreach ($workExperiences as $item)
+                                                        <div class="rounded-md border border-gray-200 p-3">
+                                                            <div class="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                                                                <p class="font-semibold text-gray-900">{{ $item->title }}</p>
+                                                                <span class="text-sm text-gray-600">{{ $item->duration }}</span>
+                                                            </div>
+                                                            @if ($item->description)
+                                                                <p class="mt-2 text-sm leading-6 text-gray-600">{{ $item->description }}</p>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-gray-900">Percorsi di studio</h4>
+                                            @if ($educationItems->isEmpty())
+                                                <p class="mt-2 text-sm text-gray-600">Non indicati.</p>
+                                            @else
+                                                <div class="mt-2 grid gap-3">
+                                                    @foreach ($educationItems as $item)
+                                                        <div class="rounded-md border border-gray-200 p-3">
+                                                            <div class="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                                                                <p class="font-semibold text-gray-900">{{ $item->title }}</p>
+                                                                <span class="text-sm text-gray-600">{{ $item->duration }}</span>
+                                                            </div>
+                                                            @if ($item->description)
+                                                                <p class="mt-2 text-sm leading-6 text-gray-600">{{ $item->description }}</p>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="flex flex-col items-start gap-2 sm:items-end">

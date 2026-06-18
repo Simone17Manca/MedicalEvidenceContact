@@ -29,6 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone' => ['required', 'string', 'max:40'],
             'nationality' => ['required_if:account_type,professional', 'nullable', Rule::in(config('nationalities.values'))],
+            'profession' => ['required_if:account_type,professional', 'nullable', Rule::in(array_keys(config('professional-professions.values')))],
             'address_city' => ['required_if:account_type,professional', 'nullable', 'string', 'max:150'],
             'address_country' => ['required_if:account_type,professional', 'nullable', 'string', 'max:150'],
             'address_province' => ['required_if:account_type,professional', 'nullable', 'string', 'max:100'],
@@ -63,6 +64,13 @@ class CreateNewUser implements CreatesNewUsers
             if ($input['account_type'] === 'professional') {
                 DB::table('professional_profiles')->insert([
                     'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                DB::table('professional_professions')->insert([
+                    'user_id' => $user->id,
+                    'profession' => $input['profession'] ?? 'oss',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

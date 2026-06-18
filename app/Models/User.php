@@ -96,4 +96,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(BusinessProfile::class);
     }
+
+    public function professionalDocument(): HasOne
+    {
+        return $this->hasOne(ProfessionalDocument::class);
+    }
+
+    public function professionalProfession(): HasOne
+    {
+        return $this->hasOne(ProfessionalProfession::class);
+    }
+
+    public function professionalProfileItems(): HasMany
+    {
+        return $this->hasMany(ProfessionalProfileItem::class);
+    }
 }

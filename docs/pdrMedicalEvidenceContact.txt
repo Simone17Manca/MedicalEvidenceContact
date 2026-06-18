@@ -1,0 +1,623 @@
+Software Requirement Document (SRD)
+Piattaforma di Matching Professionisti Socio-Sanitari e Aziende
+
+1. Introduzione e Obiettivi del Prodotto
+1.1 Vision
+Creare una piattaforma web che semplifichi l'incontro tra professionisti del settore socio-sanitario (OSS, infermieri, anestesisti, fisioterapisti) e aziende del territorio (Cooperative, RSA, Case di comunità, Cliniche private, Farmacie) che necessitano di personale qualificato.
+1.2 Obiettivi Principali
+
+Ridurre il time-to-hire per le aziende sanitarie, fornendo accesso immediato a profili qualificati
+Aumentare le opportunità di lavoro per i professionisti, centralizzando le offerte del settore
+Valorizzare la formazione esistente importando automaticamente gli attestati conseguiti sulla piattaforma di corsi preesistente (Medical Evidence)
+Garantire trasparenza e sicurezza nelle comunicazioni attraverso un sistema di consenso doppio per lo scambio di contatti personali
+Facilitare l'organizzazione dei colloqui tramite integrazione con sistemi di calendario
+
+1.3 Vantaggio Competitivo
+La piattaforma eredita una base utenti consolidata di professionisti già formati attraverso il sito di corsi di aggiornamento, offrendo alle aziende accesso immediato a candidati qualificati e certificati.
+1.4 Scope del MVP
+Il Minimum Viable Product includerà:
+
+Sistema di registrazione e autenticazione per tre tipologie di utenti
+Gestione completa del profilo professionale con import automatico attestati [verifica accessibilità api di MOODLE]
+Pubblicazione e ricerca di annunci di lavoro
+Sistema di candidatura e gestione colloqui con calendario integrato
+Notifiche email automatiche o/e sms per tutte le interazioni principali
+Dashboard personalizzate per ogni ruolo
+Sistema di privacy con scambio contatti progressivo
+
+
+2. Descrizione degli Utenti e dei Ruoli
+2.1 Admin (Amministratore Piattaforma)
+Descrizione: Gestore della piattaforma con privilegi completi di amministrazione.
+Caratteristiche:
+
+Accesso tramite URL non pubblico riservato ai proprietari della piattaforma
+Capacità di moderazione e gestione completa dei contenuti
+Controllo su tutti i profili e annunci pubblicati
+
+Responsabilità:
+
+Moderazione contenuti inappropriati
+Gestione utenti problematici
+Pubblicazione annunci per conto di aziende (se richiesto)
+Monitoraggio generale della piattaforma
+
+2.2 Professionista(B2C) (Healthcare Professional)
+Descrizione: Operatore socio-sanitario, infermiere, anestesista, fisioterapista in cerca di opportunità lavorative.
+Caratteristiche:
+
+Profilo completo con competenze, esperienze e certificazioni
+Accesso agli attestati conseguiti sulla piattaforma di formazione MOODLE
+Possibilità di candidarsi agli annunci o ricevere inviti
+Gestione autonoma del calendario colloqui
+
+Obiettivi:
+
+Trovare opportunità di lavoro coerenti con le proprie competenze
+Presentare il proprio portfolio professionale
+Organizzare colloqui in modo efficiente
+
+2.3 Business(B2B) (Azienda/Datore di Lavoro)
+Descrizione: Organizzazione del settore socio-sanitario (Cooperativa, RSA, Casa di comunità, Clinica privata, Farmacia) che cerca personale qualificato.
+Caratteristiche:
+
+Profilo aziendale con informazioni complete(Nome azienda, Partita IVA, Indirizzo)
+Gestione di uno o più Point of Contact (POC)
+Pubblicazione illimitata di annunci
+Sistema di gestione candidature e colloqui
+
+Obiettivi:
+
+Trovare professionisti qualificati rapidamente
+Gestire in modo centralizzato il processo di recruiting
+Organizzare colloqui con candidati interessanti
+
+
+3. Requisiti Funzionali Dettagliati
+3.1 Modulo Registrazione e Autenticazione
+3.1.1 Registrazione Admin
+RF-001: Il sistema deve fornire una pagina di registrazione Admin accessibile solo tramite URL non pubblico.
+Campi obbligatori:
+
+Email (validazione formato email)
+Password (minimo 8 caratteri, almeno una maiuscola, un numero, un carattere speciale)
+Conferma password
+Nome completo
+
+RF-003: Al completamento della registrazione, l'admin deve ricevere email di conferma con link di attivazione account.
+3.1.2 Registrazione Professionista
+RF-004: Il sistema deve fornire un form di registrazione pubblico per i professionisti.
+
+Sezione Anagrafica (campi obbligatori):
+
+B2C(Professionista)
+
+Nome
+Cognome
+Residenza o Domicilio (città, provincia, CAP)
+Email
+Telefono
+Password
+Conferma password
+Categoria professionale (OSS, Infermiere, Anestesista, Fisioterapista)
+
+
+Sezione Esperienze Professionali (facoltativa in fase di registrazione, editabile successivamente):
+
+Posizione ricoperta
+Nome struttura/azienda
+Località
+Data inizio (mese/anno)
+Data fine (mese/anno o "In corso")
+Descrizione attività (max 500 caratteri)
+Possibilità di aggiungere/rimuovere esperienze dinamicamente
+
+Sezione Formazione (facoltativa in fase di registrazione):
+
+Titolo di studio
+Istituto
+Anno conseguimento
+Corsi di specializzazione (elenco editabile)
+
+Sezione Attestati:
+
+Attestato di qualifica professionale(consigliato)(allegato o fotografia)
+Import automatico attestati dalla piattaforma dei corsi MOODLE (se l'utente è registrato con stessa email)
+Possibilità di caricare attestati esterni (PDF, JPG, PNG - max 5MB per file)
+Ogni attestato deve avere: nome corso, ente erogatore, data conseguimento
+
+Sezione Competenze Linguistiche:
+
+Lingua (selezione da dropdown)
+Livello (Base, Intermedio, Avanzato, Madrelingua)
+Possibilità di aggiungere/rimuovere lingue
+
+Sezione Preferenze di Impiego:
+
+Tipo struttura preferita (checkboxes multipli): ASL, Farmacia, Cooperativa, Casa di comunità, RSA, Clinica privata, Qualsiasi
+Tipo contratto preferito (checkboxes multipli): Tempo determinato, Tempo indeterminato, A chiamata, Qualsiasi
+Automunito: Sì/No
+Disponibilità geografica (raggio in km o province specifiche)
+
+RF-005: Il sistema deve validare l'univocità dell'email in fase di registrazione.
+RF-006: Il sistema deve inviare email di verifica con link di conferma account.
+RF-007: Il sistema deve controllare se esiste un account sulla piattaforma corsi con la stessa email e/o codice fiscale e, in caso affermativo, importare automaticamente gli attestati conseguiti su MOODLE.
+
+3.1.3 Registrazione Business (B2B)
+RF-008: Il sistema deve fornire un form di registrazione pubblico per le aziende.
+Sezione Anagrafica Azienda (campi obbligatori):
+
+Nome azienda/struttura
+Tipo azienda (dropdown): Cooperativa, RSA, Casa di comunità, Clinica privata, Farmacia, ASL, Altro
+Indirizzo completo (via, città, provincia, CAP)
+Partita IVA
+Numero dipendenti (dropdown): 1-10, 11-50, 51-200, 201-500, 500+
+
+Sezione Point of Contact (POC) Principale:
+
+Nome
+Cognome
+Email
+Telefono
+Ruolo in azienda
+
+RF-009: Il sistema deve creare automaticamente il primo POC come contatto principale durante la registrazione.
+RF-010: Il sistema deve validare partita IVA e univocità email.
+RF-011: Il sistema deve inviare email di conferma registrazione al POC principale.
+3.1.4 Login
+RF-012: Il sistema deve fornire una pagina di login unificata con:
+
+Email
+Password
+Checkbox "Ricordami"
+Link "Password dimenticata"
+
+RF-013: Il sistema deve identificare automaticamente il tipo di utente (Admin/Professionista/Business) dopo il login e reindirizzare alla dashboard appropriata.
+RF-014: Il sistema deve implementare la funzionalità "Password dimenticata" con invio email di reset.
+
+3.2 Modulo Gestione Profilo
+3.2.1 Profilo Professionista
+RF-015: Il professionista deve poter modificare tutte le informazioni inserite in fase di registrazione.
+RF-016: Il sistema deve permettere l'aggiunta/modifica/eliminazione di:
+
+Esperienze professionali (illimitate)
+Titoli di studio
+Attestati (caricamento file)
+Lingue conosciute
+
+RF-017: Il sistema deve mostrare una sezione "Attestati piattaforma" separata da "Attestati esterni" per distinguere le certificazioni validate.
+RF-018: Il professionista deve poter impostare la visibilità del profilo (Pubblico/Privato).
+RF-019: Il sistema deve generare un'anteprima del profilo come lo vedono le aziende (con email e telefono nascosti).
+
+3.2.2 Profilo Business
+RF-020: Il business deve poter modificare:
+
+Informazioni aziendali
+Indirizzo sede
+Descrizione azienda (max 1000 caratteri)
+
+RF-021: Il sistema deve permettere la gestione di POC multipli:
+
+Aggiunta nuovo POC (nome, cognome, email, telefono, ruolo)
+Modifica POC esistente
+Eliminazione POC (solo se non è l'unico)
+Designazione POC principale
+
+RF-022: Ogni POC aggiunto deve ricevere credenziali di accesso via email.
+RF-023: Il sistema deve permettere a ogni POC di accedere con le proprie credenziali e visualizzare tutti gli annunci dell'azienda.
+
+3.2.3 Gestione Admin
+RF-024: L'admin deve avere accesso a un pannello con elenco completo di:
+
+Tutti i profili professionisti (con filtri: categoria, località, data registrazione)
+Tutti i profili business (con filtri: tipo azienda, località)
+Tutti gli annunci pubblicati (con filtri: stato, data pubblicazione, scadenza)
+
+RF-025: L'admin deve poter eseguire operazioni CRUD su ogni elemento:
+
+Professionista: Visualizza dettaglio, Modifica informazioni, Sospendi account, Elimina account
+Business: Visualizza dettaglio, Modifica informazioni, Sospendi account, Elimina account
+Annuncio: Visualizza, Modifica, Sospendi pubblicazione, Elimina
+
+RF-026: L'admin deve poter pubblicare annunci per conto di qualsiasi azienda registrata e non.
+
+3.3 Modulo Pubblicazione e Gestione Annunci
+3.3.1 Creazione Annuncio (Business)
+RF-027: Il business deve poter creare un nuovo annuncio compilando:
+Campi obbligatori:
+
+Titolo annuncio (max 100 caratteri)
+Descrizione (editor di testo ricco, max 3000 caratteri)
+Categoria professionale ricercata (OSS, Infermiere, Anestesista, Fisioterapista, Altra)
+Numero posti disponibili
+Indirizzo sede di lavoro (città, provincia - può essere diverso dalla sede aziendale)
+Tipo contratto (dropdown: Tempo determinato, Tempo indeterminato, A chiamata, Stage, Altro)
+Data scadenza annuncio (date picker - minimo oggi + 7 giorni)
+Range retribuzione (campo da/a con valuta EUR)
+
+Campi facoltativi:
+
+Abilità richieste (tags, max 10)
+Benefit (testo libero)
+Requisiti preferenziali (testo libero)
+Orario di lavoro (es. "Full time 40h", "Part time 20h")
+
+RF-028: Il sistema deve validare che la data di scadenza sia futura.
+RF-029: Al salvataggio, l'annuncio deve essere pubblicato immediatamente e visibile ai professionisti.
+RF-030: Il sistema deve inviare email di conferma pubblicazione al POC creatore.
+
+3.3.2 Modifica e Gestione Annuncio
+RF-031: Il business deve poter modificare annunci attivi in qualsiasi momento.
+RF-032: Il sistema deve permettere di:
+
+Modificare contenuti annuncio
+Estendere data di scadenza
+Chiudere anticipatamente annuncio (passa a stato "Scaduto")
+Eliminare annuncio
+
+RF-033: Il sistema deve impedire l'eliminazione di annunci con candidature attive; in alternativa, permettere l'archiviazione.
+RF-034: Gli annunci scaduti devono rimanere visibili nella dashboard business ma non ai professionisti.
+
+3.3.3 Ricerca Annunci (Professionista B2C)
+RF-035: Il sistema deve fornire una pagina di ricerca annunci con filtri:
+Filtri disponibili:
+
+Keyword (ricerca in titolo e descrizione)
+Località (città, provincia, raggio km)
+Tipo contratto (checkboxes multipli)
+Categoria azienda (checkboxes multipli)
+Range retribuzione (slider min/max)
+Categoria professionale
+Data pubblicazione (più recenti, ultima settimana, ultimo mese)
+
+RF-036: Il sistema deve mostrare risultati paginati (20 annunci per pagina).
+RF-037: Ogni risultato deve mostrare:
+
+Titolo annuncio
+Nome azienda (senza contatti)
+Località
+Tipo contratto
+Range retribuzione (se presente)
+Data pubblicazione
+Data scadenza
+Badge "Nuova" se pubblicato negli ultimi 3 giorni
+
+RF-038: Il sistema deve permettere il salvataggio di annunci preferiti.
+RF-039: Il professionista deve poter cliccare su un annuncio per visualizzare i dettagli completi.
+
+3.4 Modulo Candidature e Colloqui
+3.4.1 Candidatura Professionista
+RF-040: Dalla pagina dettaglio annuncio, il professionista deve poter cliccare "Candidati".
+RF-041: Il sistema deve mostrare un modal con:
+
+Riepilogo dati profilo (anteprima)
+Campo "Messaggio di presentazione" facoltativo (max 500 caratteri)
+Checkbox "Confermo l'invio della candidatura"
+Pulsante "Invia candidatura" con possibile annullamento
+
+RF-042: Al click su "Invia candidatura", il sistema deve:
+
+Registrare la candidatura con timestamp
+Inviare email al business notificando nuova candidatura
+Inviare email di conferma al professionista
+Mostrare messaggio di successo
+Aggiungere l'annuncio alla sezione "Candidature inviate" della dashboard professionista
+
+RF-043: Il professionista non deve poter candidarsi due volte allo stesso annuncio.
+
+3.4.2 Gestione Candidature (Business)
+RF-044: Il business deve visualizzare nella dashboard:
+
+Numero totale candidature per ogni annuncio
+Lista candidature con stato (Nuova, Visualizzata, In colloquio, Rifiutata, Accettata)
+
+RF-045: Cliccando su una candidatura, il business deve vedere:
+
+Profilo completo del professionista (SENZA email e telefono)
+Messaggio di presentazione
+Pulsanti azione: "Fissa colloquio", "Rifiuta candidatura"
+
+RF-046: Il sistema deve permettere al business di rifiutare una candidatura:
+
+Click su "Rifiuta"
+Invio email automatico al professionista
+Cambio stato candidatura a "Rifiutata"
+
+3.4.3 Sistema Fissaggio Colloquio
+RF-047: Il business deve poter cliccare "Fissa un colloquio" da una candidatura.
+RF-048: Il sistema deve aprire un'interfaccia di calendario che:
+
+Si integra tramite API di Google Calendar (o calendario configurabile)
+Permette al POC di selezionare/creare slot di disponibilità
+Ogni slot deve avere: data, ora inizio, ora fine, modalità colloquio (presenza/videochiamata/telefono)
+
+RF-049: Dopo aver definito gli slot, il sistema deve:
+
+Inviare email al professionista con link agli slot disponibili
+Cambiare stato candidatura a "Invito a colloquio inviato"
+
+RF-050: Il professionista riceve email con:
+
+Dettagli annuncio
+Lista slot disponibili
+Link diretto alla piattaforma per selezionare uno slot
+
+RF-051: Il professionista accede alla piattaforma e visualizza:
+
+Tutti gli slot proposti
+Per ogni slot: data, ora, modalità
+Possibilità di selezionare uno slot
+Pulsante "Conferma colloquio"
+
+RF-052: Alla conferma dello slot da parte del professionista:
+
+Stato colloquio passa a "Richiesto"
+Email inviata al business: "Il professionista X ha richiesto il colloquio per lo slot Y"
+Dashboard business mostra richiesta in attesa di conferma
+
+RF-053: Il business può:
+
+Accettare: stato passa a "Accettato", viene creato evento nel calendario, email di conferma a entrambi
+Rifiutare: stato torna a "Invito a colloquio inviato", email al professionista invitandolo a scegliere un altro slot
+
+RF-054: Solo quando lo stato è "Accettato", il sistema deve:
+
+Rendere visibili email e telefono di entrambe le parti
+Invio di reminder del colloquio 5 ore prima da entrambe le parti
+Chiedere consenso del professionista per la condivisione di dati email e telfono con l'utente Business
+Mostrare un banner nella sezione colloquio: "Contatti sbloccati: [email] [telefono]"(possibilità di messagistica diretta tramite portale)
+Inviare email di conferma con i contatti dell'altra parte
+
+3.4.4 Gestione Stati Colloquio
+RF-055: Il sistema deve gestire i seguenti stati:
+StatoDescrizioneAzioni disponibiliRichiestoProfessionista ha scelto uno slot, in attesa conferma businessBusiness: Accetta/RifiutaAccettatoColloquio confermato da entrambe le partiProfessionista/Business: Riprogramma/AnnullaRifiutatoBusiness ha rifiutato lo slot propostoProfessionista: Scegli nuovo slotCompletatoColloquio avvenutoNessuna azioneAnnullatoUna delle parti ha annullatoProfessionista/Business: Riprogramma
+RF-056: Quando un colloquio è nello stato "Accettato", sia professionista che business devono poter:
+
+Riprogrammare: sistema ripropone selezione nuovo slot, email a entrambi
+Annullare: stato passa ad "Annullato", email a entrambi con richiesta di conferma annullamento o riprogrammazione
+
+RF-057: In caso di annullamento, il sistema deve inviare email con:
+
+Motivo annullamento (campo facoltativo)
+Link per riprogrammare 
+Link per confermare annullamento definitivo
+
+RF-058: Dopo il colloquio, il sistema deve permettere (facoltativo per MVP futuro):
+
+Feedback reciproco
+Conferma assunzione/non assunzione non mvp
+
+3.5 Modulo Notifiche
+3.5.1 Notifiche Email
+RF-059: Il sistema deve inviare email automatiche per i seguenti eventi:
+Al Professionista:
+
+Registrazione completata (con link conferma email)
+Business ha visualizzato il profilo
+Business ha inviato invito a colloquio (con link agli slot)
+Colloquio confermato (con contatti business)
+Colloquio annullato (con link riprogrammazione)
+Candidatura rifiutata
+
+Al Business:
+
+Registrazione completata
+Nuova candidatura ricevuta (con link al profilo)
+Professionista ha selezionato slot colloquio
+Colloquio confermato (con contatti professionista)
+Colloquio annullato (con link riprogrammazione)
+Annuncio in scadenza (7 giorni prima)
+
+RF-060: Ogni email deve contenere:
+
+Logo piattaforma
+Oggetto chiaro e descrittivo
+Corpo messaggio con call-to-action
+Link diretto alla sezione rilevante della piattaforma
+Footer con link disattivazione notifiche
+
+RF-061: Il sistema deve permettere la configurazione preferenze notifiche:
+
+Attiva/Disattiva per categoria
+Frequenza (immediata, digest giornaliero, digest settimanale)
+
+3.6 Modulo Dashboard
+
+3.6.1 Dashboard Professionista
+RF-062: La dashboard deve mostrare:
+Sezione "Riepilogo":
+
+Numero totale candidature inviate
+Numero colloqui in programma
+Numero inviti ricevuti da visualizzare
+Completamento profilo (percentuale)
+
+Sezione "Candidature" (tab):
+
+Lista candidature con: titolo annuncio, azienda, data invio, stato
+Filtri: tutte, in attesa, in colloquio, rifiutate
+Link rapido a ogni annuncio
+
+Sezione "Colloqui" (tab):
+
+Prossimi colloqui (data, ora, azienda, modalità)
+Storico colloqui completati
+Azioni: Riprogramma, Annulla, Contatta (se accettato)
+
+Sezione "Inviti ricevuti" (tab):
+
+Inviti a colloquio da confermare
+Azione: Visualizza slot disponibili
+
+Sezione "Annunci salvati" (tab):
+
+Annunci preferiti
+Azione rapida: Candidati
+
+RF-063: Il sistema deve evidenziare con badge le notifiche non lette.
+3.6.2 Dashboard Business
+RF-064: La dashboard deve mostrare:
+Sezione "Riepilogo":
+
+Numero annunci attivi
+Numero totale candidature ricevute
+Prossimi colloqui (questa settimana)
+Annunci in scadenza
+
+Sezione "Annunci" (tab):
+
+Lista annunci con: titolo, data pubblicazione, scadenza, numero candidature, stato
+Filtri: attivi, scaduti, tutti
+Azioni: Modifica, Visualizza candidature, Chiudi
+
+Sezione "Candidature" (tab):
+
+Tutte le candidature aggregate
+Filtri: per annuncio, per stato
+Azioni: Visualizza profilo, Fissa colloquio, Rifiuta
+
+Sezione "Colloqui" (tab):
+
+Prossimi colloqui (data, ora, professionista, annuncio)
+Storico colloqui
+Azioni: Riprogramma, Annulla, Contatta
+
+Sezione "POC" (tab):
+
+Gestione Point of Contact
+Azioni: Aggiungi, Modifica, Elimina
+
+RF-065: Ogni POC deve vedere tutti gli annunci e candidature dell'azienda, non solo i propri.
+3.6.3 Dashboard Admin
+RF-066: La dashboard admin deve mostrare:
+Sezione "Panoramica":
+
+Totale utenti registrati (per tipo)
+Totale annunci pubblicati (attivi/scaduti)
+Candidature totali
+Colloqui programmati
+
+Sezione "Gestione Professionisti":
+
+Tabella con tutti i professionisti
+Colonne: nome, categoria, località, data registrazione, stato account
+Azioni: Visualizza, Modifica, Sospendi, Elimina
+Ricerca e filtri
+
+Sezione "Gestione Business":
+
+Tabella con tutte le aziende
+Colonne: nome azienda, tipo, località, POC principale, data registrazione
+Azioni: Visualizza, Modifica, Sospendi, Elimina
+Ricerca e filtri
+
+Sezione "Gestione Annunci":
+
+Tabella con tutti gli annunci
+Colonne: titolo, azienda, categoria, data pubblicazione, scadenza, candidature
+Azioni: Visualizza, Modifica, Sospendi, Elimina
+Filtro per stato e azienda
+
+Sezione "Pubblica Annuncio":
+
+Form completo pubblicazione annuncio
+Selezione azienda per cui pubblicare
+Tutti i campi come RF-027
+
+
+4. User Stories Principali con Priorità (MoSCoW)
+Must Have (Critiche per MVP)
+US-001: Come Professionista, voglio registrarmi alla piattaforma con i miei dati professionali, così posso iniziare a cercare lavoro.
+
+Acceptance Criteria:
+
+Form registrazione completo funzionante
+Email di conferma ricevuta
+Profilo creato e accessibile dopo login
+
+USER STORIES:
+
+US-002: Come Professionista, voglio che i miei attestati dalla piattaforma corsi vengano importati automaticamente, così non devo ricaricarli manualmente.
+
+AC: Attestati visibili in sezione dedicata, con etichetta "Certificato piattaforma"
+
+US-003: Come Business, voglio pubblicare un annuncio di lavoro con tutti i dettagli, così posso ricevere candidature.
+
+AC: Annuncio pubblicato, visibile ai professionisti, modificabile
+
+US-004: Come Professionista, voglio cercare annunci per località e tipo contratto, così trovo opportunità adatte a me.
+
+AC: Filtri funzionanti, risultati pertinenti, visualizzazione dettagli annuncio
+
+US-005: Come Professionista, voglio candidarmi a un annuncio, così il business può valutare il mio profilo.
+
+AC: Candidatura inviata, email ricevuta, visibile in dashboard
+
+US-006: Come Business, voglio visualizzare le candidature ricevute senza vedere email e telefono del candidato, così rispetto la privacy.
+
+AC: Profilo visibile completo tranne contatti, messaggio presentazione visibile
+
+US-007: Come Business, voglio invitare un candidato a un colloquio proponendo slot di disponibilità, così organizzo facilmente gli incontri.
+
+AC: Slot creati, email inviata al professionista, integrazione calendario funzionante
+
+US-008: Come Professionista, voglio selezionare uno slot proposto per il colloquio, così confermo la mia disponibilità.
+
+AC: Slot selezionabile, richiesta inviata al business, email ricevuta
+
+US-009: Come Business, voglio confermare un colloquio e ricevere i contatti del professionista, così posso organizzare i dettagli.
+
+AC: Stato "Accettato", contatti visibili, email con contatti ricevuta
+
+US-010: Come Professionista, voglio vedere email e telefono del business solo dopo conferma colloquio, così la mia privacy è protetta.
+
+AC: Contatti nascosti fino a stato "Accettato", poi visibili
+
+US-011: Come Professionista/Business, voglio ricevere email per ogni azione importante (candidatura, invito, conferma), così resto aggiornato.
+
+AC: Email inviate per tutti gli eventi RF-059, link cliccabili funzionanti
+
+US-012: Come Admin, voglio modificare o eliminare profili e annunci inappropriati, così mantengo la qualità della piattaforma.
+
+AC: CRUD completo funzionante, modifiche salvate, eliminazioni definitive
+
+Should Have (Importanti ma non bloccanti)
+US-013: Come Professionista, voglio salvare annunci preferiti, così posso candidarmi in seguito.
+
+AC: Pulsante "Salva", annunci visibili in sezione dedicata, rimuovibili
+
+US-014: Come Business, voglio chiudere anticipatamente un annuncio, così non ricevo candidature se la posizione è coperta.
+
+AC: Annuncio non più visibile ai professionisti, candidature esistenti mantenute
+
+US-015: Come Business, voglio aggiungere più POC alla mia azienda, così più persone possono gestire il recruiting.
+
+AC: POC aggiunti, credenziali inviate via email, accesso funzionante
+
+US-016: Come Professionista, voglo riprogrammare o annullare un colloquio confermato, così posso gestire imprevisti.
+
+AC: Pulsanti disponibili, email inviata all'altra parte, stato aggiornato
+
+US-017: Come Business, voglio vedere statistiche sulle candidature per annuncio, così capisco l'efficacia dei miei annunci.
+
+AC: Numero visualizzazioni, candidature, colloqui completati
+
+Could Have (Desiderabili)
+US-018: Come Professionista, voglio ricevere suggerimenti di annunci basati sul mio profilo, così trovo opportunità rilevanti più facilmente.
+
+AC: Sezione "Consigliati per te" in homepage, algoritmo di matching
+
+US-019: Come Business, voglio filtrare candidati per competenze specifiche, così risparmio tempo nella selezione.
+
+AC: Filtri avanzati in lista candidature
+
+US-020: Come Professionista/Business, voglio lasciare un feedback dopo il colloquio, così aiuto a migliorare la piattaforma.
+
+AC: Form feedback facoltativo, rating e commento
+
+Won't Have (Fuori scope MVP)
+US-021: Sistema di messaggistica interno alla piattaforma
+US-022: Video colloqui integrati nella piattaforma
+US-023: Sistema di pagamento per annunci premium
+US-024: App mobile nativa
+

@@ -122,7 +122,7 @@ class JobPostingController extends Controller
 
         $jobPosting->load([
             'applications' => fn ($query) => $query
-                ->with('professional:id,name,first_name,last_name,role,residence')
+                ->with(['professional:id,name,first_name,last_name,role,residence', 'professional.professionalProfileItems' => fn ($items) => $items->latest()])
                 ->latest(),
         ]);
 
