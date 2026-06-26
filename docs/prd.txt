@@ -1,0 +1,193 @@
+Software Requirements Document (SRD)
+Piattaforma di Matching Professionisti Socio-Sanitari ↔ Aziende
+1. Introduzione e obiettivi del prodotto
+1.1 Contesto
+Il prodotto nasce come estensione naturale di una piattaforma già esistente che eroga corsi di aggiornamento professionale per operatori del settore socio-sanitario (OSS, infermieri, anestesisti, fisioterapisti).
+L’obiettivo è creare una piattaforma di matching lavoro verticale per il settore sanitario.
+
+1.2 Visione del prodotto
+Diventare la piattaforma di riferimento per il recruiting nel settore socio-sanitario, integrando formazione continua e opportunità lavorative in un unico ecosistema.
+
+1.3 Obiettivi dell’MVP
+Consentire a professionisti di creare un profilo completo e candidarsi ad annunci.
+
+Consentire alle aziende di pubblicare annunci e gestire candidature.
+
+Introdurre un sistema strutturato di gestione colloqui (calendario + slot).
+
+Automatizzare comunicazioni tramite notifiche email.
+
+1.4 KPI principali
+Numero di professionisti registrati
+Numero di aziende attive
+Numero di annunci pubblicati
+Tasso di candidatura per annuncio
+Numero di colloqui fissati
+
+2. Descrizione degli utenti e dei ruoli
+2.1 Admin
+Utente interno con privilegi completi.
+Permessi: CRUD completo su profili professionisti, profili business, annunci; accesso a dashboard globale.
+
+2.2 Professionista
+Operatore socio-sanitario in cerca di lavoro.
+Tipologie: OSS, infermieri, anestesisti, fisioterapisti.
+
+2.3 Business (Azienda)
+Organizzazione che ricerca personale sanitario.
+Tipologie: Cooperative, RSA, case di comunità, cliniche private, farmacie.
+Struttura: un’azienda può avere più POC (Point of Contact); ogni POC può gestire colloqui e annunci.
+
+3. Requisiti funzionali (per moduli)
+3.1 Registrazione & Autenticazione
+
+Professionista
+Form: nome, cognome, residenza, email (univoca), telefono (non visibile).
+Validazione email.
+Login via email/password.
+
+Business
+Form: nome azienda, tipo azienda, località, numero dipendenti.
+Inserimento POC (nome, cognome, email, telefono).
+Possibilità di aggiungere POC successivi.
+
+Admin
+Accesso da URL non pubblico.
+Autenticazione forte (consigliato 2FA).
+
+3.2 Gestione Profilo
+
+Profilo Professionista
+Anagrafica, esperienze (CRUD), formazione (CRUD).
+Attestati: import automatico (da piattaforma corsi) + upload manuale (PDF, JPG).
+Lingue, preferenze (tipo struttura, tipo contratto, automunito).
+Editing completo, salvataggio draft, profilo visibile alle aziende (senza contatti).
+
+Profilo Business
+Anagrafica azienda, tipo, dimensioni, località, lista POC.
+Aggiunta/rimozione POC, editing dati.
+
+3.3 Pubblicazione Annunci
+Campi: titolo, descrizione, numero posizioni, indirizzo sede lavoro, abilità richieste (opzionale), tipo contratto, range retribuzione, data scadenza.
+Stati: attivo, scaduto.
+Funzionalità: creazione, editing, pubblicazione da Admin e Business.
+
+3.4 Ricerca Annunci
+Filtri: keyword, località, tipo contratto, categoria azienda, range retribuzione.
+Funzionalità: ordinamento risultati, paginazione.
+
+3.5 Candidature
+Professionista: candidarsi a un annuncio, visualizzare stato candidatura.
+Business: visualizzare candidati, invitare a colloquio.
+Stati candidatura: inviata, visualizzata, invitato a colloquio, rifiutata.
+
+3.6 Gestione Colloqui
+Stati: richiesto, accettato, rifiutato, completato.
+Business: definizione slot tramite API calendario, invio invito.
+Professionista: visualizzare slot disponibili, selezionare slot.
+Regole: colloquio = accettato solo dopo doppia conferma.
+Azioni possibili: annullare, riprogrammare.
+
+3.7 Contatti
+Email e telefono NON visibili inizialmente.
+Comunicazioni via piattaforma.
+Sblocco contatti SOLO quando stato = accettato e con doppio consenso.
+
+3.8 Notifiche Email
+Trigger:
+Candidatura → Business
+Colloquio fissato / annullato → Entrambi
+Requisiti: email con link deep-link, template standardizzato.
+
+3.9 Dashboard
+Professionista: candidature, colloqui, inviti.
+Business: annunci attivi/scaduti, numero candidature, colloqui.
+Admin: accesso rapido a profili e annunci.
+
+4. User Stories (MoSCoW)
+Must Have
+
+Come professionista voglio creare un profilo per candidarmi.
+
+Come business voglio pubblicare annunci.
+
+Come professionista voglio candidarmi.
+
+Come utente voglio ricevere notifiche email.
+
+Should Have
+
+Come business voglio gestire slot calendario.
+
+Come professionista voglio filtrare annunci.
+
+Come utente voglio annullare colloqui.
+
+Could Have
+
+Salvataggio annunci.
+
+Rating aziende.
+
+Won’t Have (MVP)
+
+Matching automatico AI.
+
+Video colloqui integrati.
+
+5. Requisiti non funzionali
+5.1 Privacy
+GDPR compliance.
+Minimizzazione dati.
+Contatti oscurati.
+
+5.2 Usabilità
+Webapp-first.
+
+5.3 Usabilità
+UX semplice (target non tech).
+
+5.4 Scalabilità
+Architettura modulare.
+API-first.
+
+6. Integrazioni esterne
+Calendar API: Google Calendar (preferito) per creazione slot e sync eventi.
+Email Service
+Import attestati: API interna piattaforma corsi, matching via email utente.
+
+7. Vincoli e Assunzioni
+Vincoli:
+MVP.
+Time-to-market rapido.
+Integrazione con sistema esistente.
+
+Assunzioni:
+Base utenti già attiva.
+Aziende interessate al recruiting digitale.
+Email affidabile come canale principale.
+
+8. Mockup descrittivi dei flussi chiave
+8.1 Registrazione Professionista
+Landing → “Registrati” → Inserimento dati base → Verifica email → Accesso dashboard vuota → Prompt completamento profilo (esperienze, formazione, attestati) → Profilo attivo.
+
+8.2 Pubblicazione Annuncio (Business)
+Login → Dashboard → “Crea annuncio” → Compilazione form → Revisione → Pubblicazione → Annuncio visibile nei risultati ricerca.
+
+8.3 Processo Colloquio
+Candidatura: Professionista clicca “Candidati”.
+
+Slot: Business definisce disponibilità, Professionista sceglie slot.
+
+Conferma: Stato → Accettato, contatti sbloccati.
+
+Gestione: possibilità di riprogrammare o annullare.
+
+Post-colloquio: Stato → Completato.
+
+9. Evoluzioni future (post-MVP)
+
+Matching intelligente.
+Piano pro con possibilità di ricerca attiva di candidati
+Sistema di rating.
+Video colloqui integrati.
