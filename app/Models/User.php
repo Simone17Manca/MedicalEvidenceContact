@@ -111,4 +111,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(ProfessionalProfileItem::class);
     }
+    public function moodleUserLinks(): HasMany
+    {
+        return $this->hasMany(MoodleUserLink::class, 'laravel_user_id');
+    }
+
+    public function moodleLinkAttempts(): HasMany
+    {
+        return $this->hasMany(MoodleLinkAttempt::class, 'laravel_user_id');
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(UserCertificate::class, 'laravel_user_id');
+    }
 }

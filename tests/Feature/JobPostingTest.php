@@ -228,11 +228,10 @@ class JobPostingTest extends TestCase
         $this->actingAs($professional)
             ->get('/dashboard')
             ->assertSee('Le tue candidature')
-            ->assertSee('Colloqui')
-            ->assertSee('Invito da confermare')
-            ->assertSee('Conferma colloquio')
             ->assertSee('Fisioterapista ambulatoriale')
-            ->assertSee('Candidatura inviata');
+            ->assertSee('Candidatura inviata')
+            ->assertDontSee('Rispondi a un invito')
+            ->assertDontSee('Agenda inviti');
     }
 
     public function test_business_user_cannot_apply_to_a_job_posting(): void
@@ -297,11 +296,89 @@ class JobPostingTest extends TestCase
             ->assertSee('Giulia Rossi')
             ->assertSee('Bologna')
             ->assertSee('inviata')
-            ->assertSee('Fissa colloquio')
-            ->assertSee('Proponi slot')
-            ->assertSee('Invito a colloquio inviato')
+            ->assertDontSee('Nuovo invito a colloquio')
+            ->assertDontSee('Slot proposti')
             ->assertDontSee('giulia.rossi@example.test')
             ->assertDontSee('3331234567');
+    }
+
+    public function test_business_user_can_view_interviews_frontend_section(): void
+    {
+        $business = User::factory()->create([
+            'role' => 'business',
+        ]);
+
+        $professional = User::factory()->create([
+            'role' => 'professional',
+            'name' => 'Giulia Rossi',
+            'first_name' => 'Giulia',
+            'last_name' => 'Rossi',
+            'residence' => 'Bologna',
+        ]);
+
+        $jobPosting = JobPosting::create([
+            'user_id' => $business->id,
+            'title' => 'Tecnico radiologo',
+            'description' => 'Posizione aperta in diagnostica.',
+            'positions' => 1,
+            'workplace_address' => 'Via San Luca 12, Bologna',
+            'contract_type' => 'Tempo indeterminato',
+            'expires_at' => now()->addWeek()->toDateString(),
+            'status' => 'active',
+        ]);
+
+        JobApplication::create([
+            'job_posting_id' => $jobPosting->id,
+            'user_id' => $professional->id,
+            'status' => 'inviata',
+        ]);
+
+        $this->actingAs($business)
+            ->get(route('interviews.index'))
+            ->assertOk()
+            ->assertSee('Colloqui')
+            ->assertSee('Candidature da pianificare')
+            ->assertSee('Nuovo invito a colloquio')
+            ->assertSee('Slot proposti')
+            ->assertSee('Giulia Rossi')
+            ->assertSee('Invia invito');
+    }
+
+    public function test_professional_user_can_view_interviews_frontend_section(): void
+    {
+        $professional = User::factory()->create([
+            'role' => 'professional',
+        ]);
+
+        $business = User::factory()->create([
+            'role' => 'business',
+        ]);
+
+        $jobPosting = JobPosting::create([
+            'user_id' => $business->id,
+            'title' => 'Fisioterapista ambulatoriale',
+            'description' => 'Opportunita per fisioterapista in ambulatorio.',
+            'positions' => 1,
+            'workplace_address' => 'Via Napoli 8, Torino',
+            'contract_type' => 'Collaborazione',
+            'expires_at' => now()->addWeek()->toDateString(),
+            'status' => 'active',
+        ]);
+
+        JobApplication::create([
+            'job_posting_id' => $jobPosting->id,
+            'user_id' => $professional->id,
+            'status' => 'inviata',
+        ]);
+
+        $this->actingAs($professional)
+            ->get(route('interviews.index'))
+            ->assertOk()
+            ->assertSee('Inviti e candidature')
+            ->assertSee('Rispondi a un invito')
+            ->assertSee('Consenso sblocco contatti')
+            ->assertSee('Fisioterapista ambulatoriale')
+            ->assertSee('Conferma slot');
     }
 
     public function test_business_owner_can_update_a_job_posting(): void

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MoodleSite;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,8 +18,21 @@ class ProfessionalDashboardController extends Controller
             ->latest()
             ->get();
 
+        $moodleSites = MoodleSite::query()
+            ->where('enabled', true)
+            ->orderBy('name')
+            ->get();
+
+        $moodleUserLinks = $request->user()
+            ->moodleUserLinks()
+            ->with('moodleSite')
+            ->latest()
+            ->get();
+
         return view('professionals.dashboard', [
             'acceptedJobApplications' => $acceptedJobApplications,
+            'moodleSites' => $moodleSites,
+            'moodleUserLinks' => $moodleUserLinks,
         ]);
     }
 }

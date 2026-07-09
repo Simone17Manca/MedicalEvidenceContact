@@ -72,18 +72,18 @@ Legenda:
   - Riferimenti: RF-046, RF-059.
 - [~] Invito a colloquio da candidatura.
   - Riferimenti: RF-047, RF-049, US-007.
-  - Stato: frontend presente nella lista candidature business; mancano salvataggio slot, invio email e cambio stato candidatura.
+  - Stato: frontend spostato nella sezione dedicata `Colloqui`; mancano salvataggio slot, invio email e cambio stato candidatura.
 
 ### Colloqui e calendario
 
 - [~] Creazione slot colloquio da business.
   - Riferimenti: RF-048, US-007, INT-001.
-  - Stato: interfaccia frontend con data, ora inizio/fine e modalita; mancano modello dati, controller, validazione e integrazione calendario.
+  - Stato: sezione `Colloqui` con form frontend pronto per endpoint backend, slot multipli, data, ora inizio/fine e modalita; mancano modello dati, controller POST, validazione e integrazione calendario.
 - [ ] Invio slot al professionista con link diretto.
   - Riferimenti: RF-049, RF-050.
 - [~] Conferma/rifiuto slot scelto dal professionista.
   - Riferimenti: RF-052, RF-053.
-  - Stato: frontend professionista con scelta slot e pulsante conferma non attivo; manca persistenza e gestione richieste business.
+  - Stato: sezione `Colloqui` professionista con scelta slot, consenso sblocco contatti e pulsanti frontend non attivi; manca persistenza e gestione richieste business.
 - [~] Stati colloquio: richiesto, accettato, rifiutato, completato, annullato.
   - Riferimenti: RF-055.
   - Stato: stati rappresentati in UI; manca tabella/stato reale nel database e transizioni lato backend.
@@ -104,7 +104,7 @@ Legenda:
   - Riferimenti: RF-064.
 - [~] Tab colloqui.
   - Riferimenti: RF-064.
-  - Stato: primo blocco colloquio presente nella lista candidature business; manca tab dedicato aggregato.
+  - Stato: link di menu `Colloqui` e pagina dedicata presenti; manca dashboard aggregata con dati reali.
 - [~] Tab/area POC.
   - Riferimenti: RF-064, RF-065.
 
@@ -198,13 +198,13 @@ Legenda:
 
 - [~] Ricezione invito a colloquio con lista slot.
   - Riferimenti: RF-050, RF-051, US-008.
-  - Stato: frontend dashboard professionista presente con slot dimostrativi; manca recupero inviti reali.
+  - Stato: frontend nella sezione dedicata `Colloqui`; manca recupero inviti reali.
 - [~] Selezione slot e invio richiesta al business.
   - Riferimenti: RF-052.
   - Stato: selezione rappresentata in UI con pulsante disabilitato; manca endpoint di conferma.
 - [~] Visualizzazione colloqui in dashboard.
   - Riferimenti: RF-062.
-  - Stato: sezione "Colloqui" aggiunta alla dashboard professionista.
+  - Stato: spostata in pagina dedicata raggiungibile dal menu; la dashboard non contiene piu il blocco colloqui.
 - [ ] Riprogrammazione/annullamento colloquio accettato.
   - Riferimenti: RF-056, US-016.
 - [~] Visualizzazione contatti solo quando colloquio accettato.
@@ -246,6 +246,6 @@ Legenda:
 
 ## Ultimo aggiornamento
 
-- Data: 2026-06-23
+- Data: 2026-07-07
 - Ambiente principale: `C:\laragon\www\MedicalEvidenceContact`
 - Stato applicativo ultimo controllo: `http://medicalevidencecontact.test` raggiungibile

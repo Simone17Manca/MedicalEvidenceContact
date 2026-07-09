@@ -26,7 +26,90 @@
                 @php
                     $nationality = strtolower(trim(auth()->user()->nationality ?? ''));
                     $isItalian = in_array($nationality, ['italiana', 'italiano', 'italia', 'italian'], true);
+                    $moodleSites = $moodleSites ?? collect();
+                    $moodleUserLinks = $moodleUserLinks ?? collect();
                 @endphp
+                <section class="mb-8 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Sincronizzazione Moodle</h3>
+                            <p class="mt-1 text-sm text-gray-600">Collega il tuo utente Laravel a un sito Moodle prima della gestione attestati.</p>
+                        </div>
+                        <a href="{{ route('professional.moodle.index') }}" class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
+                            Gestisci collegamenti
+                        </a>
+                    </div>
+
+                    @if ($moodleSites->isEmpty())
+                        <div class="mt-5 rounded-md border border-dashed border-gray-300 p-5 text-sm text-gray-600">
+                            Nessun sito Moodle disponibile per il collegamento.
+                        </div>
+
+                    @else
+                        <form method="POST" action="{{ route('professional.moodle.start') }}" class="mt-5 grid gap-4 lg:grid-cols-4">
+                            @csrf
+
+                            <div>
+                                <x-label for="moodle_site_id" value="Sito Moodle" />
+                                <select id="moodle_site_id" name="moodle_site_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                    @foreach ($moodleSites as $moodleSite)
+                                        <option value="{{ $moodleSite->id }}" @selected(old('moodle_site_id') == $moodleSite->id)>
+                                            {{ $moodleSite->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <x-label for="lookup_type" value="Tipo dato" />
+                                <select id="lookup_type" name="lookup_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                    <option value="email" @selected(old('lookup_type') === 'email')>Email Moodle</option>
+                                    <option value="username" @selected(old('lookup_type') === 'username')>Username Moodle</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <x-label for="lookup_value" value="Email o username Moodle" />
+                                <x-input id="lookup_value" name="lookup_value" type="text" class="mt-1 block w-full" value="{{ old('lookup_value') }}" required />
+                            </div>
+
+                            <div class="flex items-end">
+                                <x-button class="w-full justify-center">
+                                    Sincronizza Moodle
+                                </x-button>
+                            </div>
+                        </form>
+                    @endif
+
+                    @if ($moodleUserLinks->isNotEmpty())
+                        <div class="mt-5 overflow-x-auto border-t border-gray-100 pt-5">
+                            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                                <thead class="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+                                    <tr>
+                                        <th class="px-3 py-2">Sito</th>
+                                        <th class="px-3 py-2">ID Moodle</th>
+                                        <th class="px-3 py-2">Username Moodle</th>
+                                        <th class="px-3 py-2">Email Moodle</th>
+                                        <th class="px-3 py-2">Stato</th>
+                                        <th class="px-3 py-2">Ultimo sync attestati</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    @foreach ($moodleUserLinks as $link)
+                                        <tr>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->moodleSite->name }}</td>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->moodle_user_id }}</td>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->moodle_username ?: '-' }}</td>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->moodle_email ?: '-' }}</td>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->status }}</td>
+                                            <td class="px-3 py-2 text-gray-700">{{ $link->last_certificate_sync_at?->format('d/m/Y H:i') ?: 'Non eseguito' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </section>
 
                 <section class="mb-8 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
                     <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -193,7 +276,7 @@
                                 <div class="flex flex-col gap-3 rounded-md border border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
                                         <p class="font-semibold text-gray-900">{{ $application->jobPosting->title }}</p>
-                                        <p class="mt-1 text-sm text-gray-600">{{ $application->jobPosting->contract_type }} · {{ $application->jobPosting->workplace_address }}</p>
+                                        <p class="mt-1 text-sm text-gray-600">{{ $application->jobPosting->contract_type }} Â· {{ $application->jobPosting->workplace_address }}</p>
                                     </div>
                                     <span class="inline-flex w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
                                         {{ str_replace('_', ' ', $application->status) }}
@@ -204,86 +287,6 @@
                     @endif
                 </section>
 
-                <section class="mb-8 rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200">
-                    <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Colloqui</h3>
-                            <p class="mt-1 text-sm text-gray-600">Inviti ricevuti, slot proposti e prossimi colloqui saranno gestiti da questa area.</p>
-                        </div>
-                        <span class="text-sm font-semibold text-gray-700">Anteprima frontend</span>
-                    </div>
-
-                    <div class="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                        <article class="rounded-md border border-indigo-100 bg-indigo-50/60 p-4">
-                            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                <div>
-                                    <p class="text-xs font-semibold uppercase text-indigo-700">Invito da confermare</p>
-                                    <h4 class="mt-1 text-base font-semibold text-gray-900">Operatore Socio Sanitario - RSA Milano Nord</h4>
-                                    <p class="mt-1 text-sm text-gray-600">Seleziona uno degli slot proposti dal business e conferma la richiesta di colloquio.</p>
-                                </div>
-                                <span class="inline-flex w-fit rounded-full bg-white px-3 py-1 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
-                                    Invito ricevuto
-                                </span>
-                            </div>
-
-                            <div class="mt-4 grid gap-3 md:grid-cols-3">
-                                <label class="flex cursor-not-allowed flex-col rounded-md bg-white p-3 ring-1 ring-indigo-100">
-                                    <span class="text-sm font-semibold text-gray-900">Martedi</span>
-                                    <span class="mt-1 text-sm text-gray-600">10:00 - 10:30</span>
-                                    <span class="mt-2 text-xs font-semibold text-indigo-700">Videochiamata</span>
-                                </label>
-                                <label class="flex cursor-not-allowed flex-col rounded-md bg-white p-3 ring-1 ring-indigo-100">
-                                    <span class="text-sm font-semibold text-gray-900">Mercoledi</span>
-                                    <span class="mt-1 text-sm text-gray-600">15:00 - 15:45</span>
-                                    <span class="mt-2 text-xs font-semibold text-indigo-700">In presenza</span>
-                                </label>
-                                <label class="flex cursor-not-allowed flex-col rounded-md bg-white p-3 ring-1 ring-indigo-100">
-                                    <span class="text-sm font-semibold text-gray-900">Venerdi</span>
-                                    <span class="mt-1 text-sm text-gray-600">09:00 - 09:30</span>
-                                    <span class="mt-2 text-xs font-semibold text-indigo-700">Telefono</span>
-                                </label>
-                            </div>
-
-                            <div class="mt-4 flex flex-col gap-3 border-t border-indigo-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                                <p class="text-sm text-gray-600">Alla conferma lo stato passera a "Richiesto" e il business dovra accettare o rifiutare.</p>
-                                <button type="button" class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white opacity-60" disabled>
-                                    Conferma colloquio
-                                </button>
-                            </div>
-                        </article>
-
-                        <aside class="rounded-md border border-gray-200 p-4">
-                            <h4 class="text-sm font-semibold text-gray-900">Stati colloquio</h4>
-                            <div class="mt-3 space-y-3 text-sm">
-                                <div class="flex items-start gap-3">
-                                    <span class="mt-1 h-2.5 w-2.5 rounded-full bg-amber-400"></span>
-                                    <div>
-                                        <p class="font-semibold text-gray-900">Richiesto</p>
-                                        <p class="text-gray-600">Slot scelto, in attesa del business.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <span class="mt-1 h-2.5 w-2.5 rounded-full bg-green-500"></span>
-                                    <div>
-                                        <p class="font-semibold text-gray-900">Accettato</p>
-                                        <p class="text-gray-600">Colloquio confermato e contatti sbloccati.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <span class="mt-1 h-2.5 w-2.5 rounded-full bg-gray-400"></span>
-                                    <div>
-                                        <p class="font-semibold text-gray-900">Annullato o rifiutato</p>
-                                        <p class="text-gray-600">Serve nuova proposta o riprogrammazione.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5 rounded-md bg-gray-50 p-3 text-sm text-gray-600">
-                                I contatti restano nascosti finche il colloquio non viene accettato da entrambe le parti.
-                            </div>
-                        </aside>
-                    </div>
-                </section>
         </div>
     </div>
 </x-app-layout>

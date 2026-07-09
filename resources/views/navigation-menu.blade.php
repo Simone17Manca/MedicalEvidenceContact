@@ -29,6 +29,14 @@
                         <x-nav-link href="{{ route('job-postings.index') }}" :active="request()->routeIs('job-postings.*')">
                             Annunci
                         </x-nav-link>
+                        <x-nav-link href="{{ route('interviews.index') }}" :active="request()->routeIs('interviews.*')">
+                            Colloqui
+                        </x-nav-link>
+                        @if (Auth::user()->role === 'professional')
+                            <x-nav-link href="{{ route('professional.moodle.index') }}" :active="request()->routeIs('professional.moodle.*')">
+                                I miei Moodle
+                            </x-nav-link>
+                        @endif
                         @if (Auth::user()->role === 'business')
                             <x-nav-link href="{{ route('business-points-of-contact.index') }}" :active="request()->routeIs('business-points-of-contact.*')">
                                 Point of Contact
@@ -176,6 +184,14 @@
                 <x-responsive-nav-link href="{{ route('job-postings.index') }}" :active="request()->routeIs('job-postings.*')">
                     Annunci
                 </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('interviews.index') }}" :active="request()->routeIs('interviews.*')">
+                    Colloqui
+                </x-responsive-nav-link>
+                @if (Auth::user()->role === 'professional')
+                    <x-responsive-nav-link href="{{ route('professional.moodle.index') }}" :active="request()->routeIs('professional.moodle.*')">
+                        I miei Moodle
+                    </x-responsive-nav-link>
+                @endif
                 @if (Auth::user()->role === 'business')
                     <x-responsive-nav-link href="{{ route('business-points-of-contact.index') }}" :active="request()->routeIs('business-points-of-contact.*')">
                         Point of Contact
